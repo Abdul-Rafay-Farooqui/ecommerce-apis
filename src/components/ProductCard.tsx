@@ -22,7 +22,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const getBadgeColor = () => {
     return product.source === 'amazon' 
       ? 'bg-orange-500 text-white' 
-      : 'bg-blue-500 text-white';
+      : product.source === 'ikea'
+      ? 'bg-yellow-500 text-white'
+      : product.source === 'target'
+      ? 'bg-red-500 text-white'
+      : 'bg-gray-500 text-white';
   };
 
   // Truncate title if too long

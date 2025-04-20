@@ -1,12 +1,12 @@
 import { WalmartApiResponse, Product } from '../types/product';
 
-const WALMART_API_URL = 'https://walmart2.p.rapidapi.com/searchV2/'; ;
+const WALMART_API_URL = 'https://walmart-product-api2.p.rapidapi.com/search'; ;
 const WALMART_API_KEY = '114d8daae5msh5150e4717dbea8fp171cb1jsn7732faf19883';
 
-export const searchWalmartProducts = async (q: string, minPrice?: number, maxPrice?: number): Promise<Product[]> => {
+export const searchWalmartProducts = async (query: string, minPrice?: number, maxPrice?: number): Promise<Product[]> => {
   try {
     const params = new URLSearchParams({
-      q,
+      q: query,
       page: '1',
     });
 
@@ -14,7 +14,7 @@ export const searchWalmartProducts = async (q: string, minPrice?: number, maxPri
       method: 'GET',
       headers: {
         'X-RapidAPI-Key': WALMART_API_KEY,
-        'X-RapidAPI-Host': 'walmart2.p.rapidapi.com'
+        'X-RapidAPI-Host': 'walmart-product-api2.p.rapidapi.com'
       }
     });
 
@@ -24,23 +24,23 @@ export const searchWalmartProducts = async (q: string, minPrice?: number, maxPri
 
     const data: WalmartApiResponse = await response.json();
     
+    console.log('Walmart API response:', data);
     // Transform Walmart products to our common Product interface
-    return data.items
-      .filter(product => {
-        const price = product.price;
+    return data.itemsV2
+      .filter((itemsV2 : any )=> {
+        const price = itemsV2.priceInfo.currentPrice.priceString;
         if (!price) return false;
         if (minPrice && price < minPrice) return false;
         if (maxPrice && price > maxPrice) return false;
         return true;
       })
-      .map(product => ({
-        id: product.id,
-        title: product.name,
-        price: product.price,
-        image: product.image || '',
-        rating: product.rating,
+      .map((itemV2 : any )=> ({
+        id: itemV2.usItemId,
+        title: itemV2.name,
+        price: itemV2.priceInfo.currentPrice.priceString,
+        image: itemV2.imageInfo.thumbnailUrl || '',
         source: 'walmart' as const,
-        url: product.productLink || `https://www.walmart.com/ip/${product.id}`
+        url: itemV2.productLink || `https://www.walmart.com/ip/${itemV2.usItemId}`
       }));
       console.log('Walmart products:', data.items);
   } catch (error) {

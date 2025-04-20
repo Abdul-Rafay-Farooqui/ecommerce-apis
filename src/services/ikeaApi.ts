@@ -59,7 +59,7 @@ export const searchIkeaProducts = async (
         price: product.price.currentPrice,
         image: product.contextualImageUrl,
         source: 'ikea' as const,
-        url: product.url|| `https://www.ikea.com/dp/${product.asin}`,
+        url: product.url|| `https://www.ikea.com/dp/${product.id}`,
       }
     ));
   } catch (error) {

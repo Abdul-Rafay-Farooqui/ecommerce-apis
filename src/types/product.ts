@@ -5,7 +5,7 @@ export interface Product {
   price: number;
   image: string;
   rating?: number;
-  source: 'amazon' | 'walmart' | 'ikea';
+  source: 'amazon' | 'walmart' | 'ikea' | 'target';
   url: string;
 }
 export interface IkeaApiResponse {
@@ -15,6 +15,23 @@ export interface IkeaApiResponse {
 }
 
 export interface IkeaProduct {
+  id: string;
+  name: string;
+  price: {
+    currentPrice: number;
+    [key: string]: any;
+  };
+  contentualImageUrl: string;
+  url?: string;
+  [key: string]: any;
+}
+export interface TargetApiResponse {
+  products: TargetProduct[];
+  metadata: {} | null;
+  [request_id: string]: any;
+}
+
+export interface TargetProduct {
   id: string;
   name: string;
   price: {

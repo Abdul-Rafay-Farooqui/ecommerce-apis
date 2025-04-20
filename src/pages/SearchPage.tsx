@@ -5,6 +5,7 @@ import { Product } from '../types/product';
 import { searchAmazonProducts } from '../services/amazonApi';
 import { searchWalmartProducts } from '../services/walmartApi';
 import { searchIkeaProducts } from '../services/ikeaApi';
+import { searchTargetProducts } from '../services/targetApi';
 import Pagination from '../components/pagination';
 
 const PRODUCTS_PER_PAGE = 12; // Number of products to show per page
@@ -25,14 +26,15 @@ const SearchPage: React.FC = () => {
     
     try {
       // Fetch products from both APIs in parallel
-      const [amazonProducts, walmartProducts, ikeaProducts] = await Promise.all([
+      const [targetProducts,amazonProducts,ikeaProducts] = await Promise.all([
+        searchTargetProducts(query, minPrice, maxPrice),
         searchAmazonProducts(query, minPrice, maxPrice),
-        searchWalmartProducts(query, minPrice, maxPrice),
+        // searchWalmartProducts(query, minPrice, maxPrice),
         searchIkeaProducts(query, minPrice, maxPrice),
       ]);
       
       // Combine and shuffle results for fairness
-      const combinedProducts = [...amazonProducts, ...walmartProducts, ...ikeaProducts];
+      const combinedProducts = [ ...targetProducts, ...amazonProducts, ...ikeaProducts];
       const shuffledProducts = combinedProducts.sort(() => Math.random() - 0.5);
       
       setProducts(shuffledProducts);
